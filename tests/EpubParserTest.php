@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class EpubParserTest extends TestCase
 {
-    public function testIsValid()
+    public function testIsValid(): void
     {
         $file = new EpubFile();
 
