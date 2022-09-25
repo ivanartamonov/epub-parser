@@ -3,11 +3,15 @@
 namespace Aradon\EpubParser;
 
 use Aradon\EpubParser\exceptions\EpubException;
+use DOMDocument;
+use DOMElement;
+use DOMXPath;
 use ZipArchive;
 
 class EpubFile
 {
     private ZipArchive $file;
+    private EpubMeta $meta;
 
     public function __construct(string $filePath)
     {
@@ -29,15 +33,49 @@ class EpubFile
             };
         }
 
-        // read container data
-        $data = $this->file->getFromName('META-INF/container.xml');
-        if ($data === false) {
-            throw new EpubException('Failed to access epub container data');
-        }
+        $this->initMeta();
     }
 
-    public function isValid(): bool
+    public function getMeta(): EpubMeta
     {
-        return true;
+        return $this->meta;
+    }
+
+    private function initMeta(): void
+    {
+        $containerData = $this->file->getFromName('META-INF/container.xml');
+
+        if ($containerData === false) {
+            throw new EpubException('Failed to access epub container data');
+        }
+
+        $doc = new DOMDocument();
+        $doc->loadXML($containerData);
+        $xpath = new DOMXPath($doc);
+        $xpath->registerNamespace('n', 'urn:oasis:names:tc:opendocument:xmlns:container');
+        $nodes = $xpath->query('//n:rootfiles/n:rootfile[@media-type="application/oebps-package+xml"]');
+
+        /**
+         * Although the EPUB Container provides the ability to include more than one rendition
+         * of the content, Reading System support for multiple renditions remains largely unrealized,
+         * outside specialized environments where the purpose and meaning of the renditions
+         * is established by the involved parties.
+         *
+         * @link https://www.w3.org/publishing/epub3/epub-ocf.html#sec-container-metainf-container.xml
+         */
+        $rootFileNode = $nodes->item(0);
+
+        if ($rootFileNode instanceof DOMElement) {
+            $metaFilePath = $rootFileNode->getAttribute('full-path');
+        } else {
+            throw new EpubException('Can\'t find root file path');
+        }
+
+        $metaDataRawXml = $this->file->getFromName($metaFilePath);
+        if (!$metaDataRawXml) {
+            throw new EpubException('Failed to access epub metadata');
+        }
+
+        $this->meta = new EpubMeta($metaDataRawXml);
     }
 }

@@ -15,4 +15,10 @@ class EpubParserTest extends EpubTestCase
         $this->expectExceptionMessage('No such file');
         new EpubFile('invalid_file_path');
     }
+
+    public function testGetMeta(): void
+    {
+        $epub = new EpubFile($this->getEpubPath('0to1.epub'));
+        $this->assertIsObject($epub->getMeta());
+    }
 }

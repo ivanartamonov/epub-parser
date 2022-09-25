@@ -27,6 +27,7 @@
         "phpstan/phpstan": "^1.8"
     },
     "require": {
-        "ext-zip": "*"
+        "ext-zip": "*",
+        "ext-dom": "*"
     }
 }
