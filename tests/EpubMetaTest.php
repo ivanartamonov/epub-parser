@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\_data;
+namespace Tests;
 
 use Aradon\EpubParser\EpubMeta;
-use Tests\EpubTestCase;
 
 class EpubMetaTest extends EpubTestCase
 {
