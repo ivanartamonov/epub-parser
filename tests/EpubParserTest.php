@@ -3,14 +3,16 @@
 namespace Tests;
 
 use Aradon\EpubParser\EpubFile;
-use PHPUnit\Framework\TestCase;
+use Aradon\EpubParser\exceptions\EpubException;
 
-class EpubParserTest extends TestCase
+class EpubParserTest extends EpubTestCase
 {
-    public function testIsValid(): void
+    public function testConstructor(): void
     {
-        $file = new EpubFile();
+        new EpubFile($this->getEpubPath('0to1.epub'));
 
-        $this->assertTrue($file->isValid());
+        $this->expectException(EpubException::class);
+        $this->expectExceptionMessage('No such file');
+        new EpubFile('invalid_file_path');
     }
 }
