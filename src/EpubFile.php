@@ -12,7 +12,6 @@ class EpubFile
 {
     private ZipArchive $file;
     private EpubOPF $opf;
-    private EpubMeta $meta;
 
     public function __construct(string $filePath)
     {
@@ -34,12 +33,12 @@ class EpubFile
             };
         }
 
-        $this->initMeta();
+        $this->initOPF();
     }
 
     public function getMeta(): EpubMeta
     {
-        return $this->meta;
+        return $this->opf->getMeta();
     }
 
     public function getOpf(): EpubOPF
@@ -47,7 +46,7 @@ class EpubFile
         return $this->opf;
     }
 
-    private function initMeta(): void
+    private function initOPF(): void
     {
         $containerData = $this->file->getFromName('META-INF/container.xml');
 
@@ -83,7 +82,5 @@ class EpubFile
         }
 
         $this->opf = new EpubOPF($metaDataRawXml);
-
-        $this->meta = $this->opf->getMeta();
     }
 }
