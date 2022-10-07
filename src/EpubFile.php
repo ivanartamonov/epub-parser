@@ -11,6 +11,7 @@ use ZipArchive;
 class EpubFile
 {
     private ZipArchive $file;
+    private EpubOPF $opf;
     private EpubMeta $meta;
 
     public function __construct(string $filePath)
@@ -39,6 +40,11 @@ class EpubFile
     public function getMeta(): EpubMeta
     {
         return $this->meta;
+    }
+
+    public function getOpf(): EpubOPF
+    {
+        return $this->opf;
     }
 
     private function initMeta(): void
@@ -76,6 +82,8 @@ class EpubFile
             throw new EpubException('Failed to access epub metadata');
         }
 
-        $this->meta = new EpubMeta($metaDataRawXml);
+        $this->opf = new EpubOPF($metaDataRawXml);
+
+        $this->meta = $this->opf->getMeta();
     }
 }

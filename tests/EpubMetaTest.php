@@ -3,12 +3,14 @@
 namespace Tests;
 
 use Aradon\EpubParser\EpubMeta;
+use DOMDocument;
+use DOMXPath;
 
 class EpubMetaTest extends EpubTestCase
 {
     public function testSimpleDcElements(): void
     {
-        $meta = new EpubMeta($this->getSampleXml());
+        $meta = new EpubMeta($this->getXmlPath($this->getSampleXml()));
 
         $this->assertEquals('Sample title', $meta->getTitle());
         $this->assertEquals('Sample description', $meta->getDescription());
@@ -22,6 +24,13 @@ class EpubMetaTest extends EpubTestCase
         $this->assertEquals('Source', $meta->getSource());
         $this->assertEquals('Subject', $meta->getSubject());
         $this->assertEquals('Type', $meta->getType());
+    }
+
+    private function getXmlPath(string $rawXml): DOMXPath
+    {
+        $doc = new DOMDocument();
+        $doc->loadXML($rawXml);
+        return new DOMXPath($doc);
     }
 
     private function getSampleXml(): string

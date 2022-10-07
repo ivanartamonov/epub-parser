@@ -21,4 +21,10 @@ class EpubParserTest extends EpubTestCase
         $epub = new EpubFile($this->getEpubPath('0to1.epub'));
         $this->assertIsObject($epub->getMeta());
     }
+
+    public function testGetOpf(): void
+    {
+        $epub = new EpubFile($this->getEpubPath('0to1.epub'));
+        $this->assertIsObject($epub->getOpf());
+    }
 }

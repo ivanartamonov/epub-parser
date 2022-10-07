@@ -2,18 +2,15 @@
 
 namespace Aradon\EpubParser;
 
-use DOMDocument;
 use DOMXPath;
 
 class EpubMeta
 {
     private DOMXPath $xml;
 
-    public function __construct(string $xml)
+    public function __construct(DOMXPath $xml)
     {
-        $doc = new DOMDocument();
-        $doc->loadXML($xml);
-        $this->xml = new DOMXPath($doc);
+        $this->xml = $xml;
     }
 
     /**
